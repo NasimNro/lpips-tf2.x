@@ -24,68 +24,77 @@ vgg_ckpt_fn = os.path.join(model_dir, 'vgg', 'exported')
 lin_ckpt_fn = os.path.join(model_dir, 'lin', 'exported')
 lpips = learned_perceptual_metric_model(image_size, vgg_ckpt_fn, lin_ckpt_fn)
 
-image_fn1 = './imgs/image1_ref_gray.png'
-image_fn2 = './imgs/srgan_enhanced.jpg'
+
+
+# Image1 with Distortions
+image_fn1 = './imgs/image1/image1.jpg'
+image_fn2 = './imgs/image1/image1_SRGAN.jpg'
 image1 = load_image(image_fn1)
 image2 = load_image(image_fn2)
 dist01 = lpips([image1, image2])
-print('SRGAN Superresolution Distance: {:.3f}'.format(dist01.numpy().item()))
+print('Image1 Superresolution Distance: {:.3f}'.format(dist01.numpy().item()))
 
-image_fn1 = './brain_imgs/brain_slice.png'
-image_fn2 = './brain_imgs/srgan_enhanced.jpg'
+image_fn1 = './imgs/image1/image1.png'
+image_fn2 = './imgs/image1/image1_deblurred.png'
+image1 = load_image(image_fn1)
+image2 = load_image(image_fn2)
+dist01 = lpips([image1, image2])
+print('Image1 Deblurred Distance: {:.3f}'.format(dist01.numpy().item()))
+
+image_fn1 = './imgs/image1/image1.jpg'
+image_fn2 = './imgs/image1/image1_denoise.jpg'
+image1 = load_image(image_fn1)
+image2 = load_image(image_fn2)
+dist01 = lpips([image1, image2])
+print('Image1 denoise Distance: {:.3f}'.format(dist01.numpy().item()))
+
+print('--------------------------------')
+
+# Slice 60 with Distortions
+image_fn1 = './imgs/brainSlice/brain_slice.jpg'
+image_fn2 = './imgs/brainSlice/brain_slice_SRGAN.jpg'
 image1 = load_image(image_fn1)
 image2 = load_image(image_fn2)
 dist01 = lpips([image1, image2])
 print('Brain Superresolution Distance: {:.3f}'.format(dist01.numpy().item()))
 
-# Convert middle slice to PNG using ITK
+image_fn1 = './imgs/brainSlice/brain_slice.png'
+image_fn2 = './imgs/brainSlice/brain_slice_deblurred.png'
+image1 = load_image(image_fn1)
+image2 = load_image(image_fn2)
+dist01 = lpips([image1, image2])
+print('Brain Deblurred Distance: {:.3f}'.format(dist01.numpy().item()))
 
-# Or specify a specific slice
-# convert_nii_to_png(nii_file_path, output_path, slice_idx=42)
+image_fn1 = './imgs/brainSlice/brain_slice.jpg'
+image_fn2 = './imgs/brainSlice/brain_slice_denoise.jpg'
+image1 = load_image(image_fn1)
+image2 = load_image(image_fn2)
+dist01 = lpips([image1, image2])
+print('Brain denoise Distance: {:.3f}'.format(dist01.numpy().item()))
 
-# if brain_slice_path:
-#     image_size = 64
-#     model_dir = './models'
-#     vgg_ckpt_fn = os.path.join(model_dir, 'vgg', 'exported')
-#     lin_ckpt_fn = os.path.join(model_dir, 'lin', 'exported')
-#     lpips = learned_perceptual_metric_model(image_size, vgg_ckpt_fn, lin_ckpt_fn)
+print('--------------------------------')
 
-#     # Vergleich von Original und verarbeitetem Bild
-#     image_fn1 = brain_slice_path
-#     image_fn2 = './imgs/Deblurred.png'
-#     image1 = load_image(image_fn1)
-#     image2 = load_image(image_fn2)
-#     dist01 = lpips([image1, image2])
-#     print('\nBrain Slice vs Processed Image comparison:')
-#     print('Distance: {:.3f}'.format(dist01.numpy().item()))
+# Slices with each other
+image_fn1 = './imgs/brain_slice65.png'
+image_fn2 = './imgs/brain_slice66.png'
+image1 = load_image(image_fn1)
+image2 = load_image(image_fn2)
+dist01 = lpips([image1, image2])
+print('Distance between slice 65 and 66: {:.3f}'.format(dist01.numpy().item()))
 
-#SRGAN Superresolution
-# image_fn1 = './imgs/image2_ref.png'
-# image_fn2 = './imgs/SRGAN.jpg'
-# image1 = load_image(image_fn1)
-# image2 = load_image(image_fn2)
-# dist01 = lpips([image1, image2])
-# # Korrekte Extraktion des einzelnen Wertes aus dem Tensor
-# print('SRGAN Superresolution Distance: {:.3f}'.format(dist01.numpy().item()))
+image_fn1 = './imgs/brain_slice65.png'
+image_fn2 = './imgs/brain_slice67.png'
+image1 = load_image(image_fn1)
+image2 = load_image(image_fn2)
+dist01 = lpips([image1, image2])
+print('Distance between slice 65 and 67: {:.3f}'.format(dist01.numpy().item()))
 
-
-
-
-
-# Vergleich von Grayscale und SRGAN enhanced Bildern
-# image_fn1 = './imgs/image1_ref_gray.jpg'
-# image_fn2 = './imgs/srgan_enhanced.jpg'
-# image1 = load_image(image_fn1)
-# image2 = load_image(image_fn2)
-# dist01 = lpips([image1, image2])
-# print('\nGrayscale vs SRGAN Enhanced comparison:')
-# print('Distance: {:.3f}'.format(dist01.numpy().item()))
+image_fn1 = './imgs/brain_slice65.png'
+image_fn2 = './imgs/brain_slice68.png'
+image1 = load_image(image_fn1)
+image2 = load_image(image_fn2)
+dist01 = lpips([image1, image2])
+print('Distance between slice 65 and 68: {:.3f}'.format(dist01.numpy().item()))
 
 
-# image_fn1 = './imgs/image1_ref_gray.png'
-# image_fn2 = './imgs/Deblurred.png'
-# image1 = load_image(image_fn1)
-# image2 = load_image(image_fn2)
-# dist01 = lpips([image1, image2])
-# print('\nGrayscale vs SRGAN Enhanced comparison:')
-# print('Distance: {:.3f}'.format(dist01.numpy().item()))
+
