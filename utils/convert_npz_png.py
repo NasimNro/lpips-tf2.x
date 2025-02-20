@@ -31,7 +31,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Save image pairs from NPZ file')
     parser.add_argument('--npz-path', type=str, required=True, help='Path to NPZ file')
     parser.add_argument('--index', type=int, required=True, help='Index of image pair')
-    parser.add_argument('--output-dir', type=str, default='./imgs/Real_Data/saved_images')
+    parser.add_argument('--output-dir', type=str, default='./imgs/lungImgs/extracted_images')
     
     args = parser.parse_args()
-    save_image_pair(args.npz_path, args.index, args.output_dir) 
+    convert_npz_to_png(args.npz_path, args.index, args.output_dir) 

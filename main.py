@@ -71,17 +71,23 @@ def main():
     calculator = ImageMetricCalculator(image_size, vgg_ckpt_fn, lin_ckpt_fn)
     
     # Definiere Bildpfade
-    original_jpg = './imgs/brainSlice/brain_slice.jpg'
-    original_png = './imgs/brainSlice/brain_slice.png'
-    deblurred = './imgs/brainSlice/brain_slice_deblurred.png'
-    denoised = './imgs/brainSlice/brain_slice_denoise.jpg'
-    srgan = './imgs/brainSlice/brain_slice_SRGAN.jpg'
+    original_jpg = './imgs/brainImgs/brain_slice.jpg'
+    original_png = './imgs/brainImgs/brain_slice.png'
+    deblurred = './imgs/brainImgs/brain_slice_deblurred.png'
+    denoised = './imgs/brainImgs/brain_slice_denoise.jpg'
+    srgan = './imgs/brainImgs/brain_slice_SRGAN.jpg'
     
     # Definiere Slice Pfade
     slice65 = './imgs/brain_slice65.png'  # Original Slice
     slice66 = './imgs/brain_slice66.png'
     slice67 = './imgs/brain_slice67.png'
     slice68 = './imgs/brain_slice68.png'
+
+    berg = './imgs/berg.jpg'
+    landschaft = './imgs/landschaft.jpeg'
+
+    original_lung = './imgs/lungImgs/extracted_images/original_2.png'
+    predicted_lung = './imgs/lungImgs/extracted_images/prediction_2.png'
     
     print('Brain Slice Image Quality Metrics')
     print('=' * 50)
@@ -140,6 +146,12 @@ def main():
     # Slice 68 vs 65
     metrics = calculator.calculate_metrics(slice65, slice68)
     print_metrics('Slice 65 vs 68', metrics)
+
+    metrics = calculator.calculate_metrics(berg, landschaft)
+    print_metrics('berg vs landschaft', metrics)
+
+    metrics = calculator.calculate_metrics(original_lung, predicted_lung)
+    print_metrics('original lung vs predicted lung', metrics)
 
 if __name__ == "__main__":
     main()

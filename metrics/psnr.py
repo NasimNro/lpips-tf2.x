@@ -18,4 +18,4 @@ def calculate_psnr(image1: np.ndarray, image2: np.ndarray) -> float:
     if mse == 0:
         return float('inf')
     
-    return 20 * np.log10(255.0) - 10 * np.log10(mse) 
+    return 20 * np.log10(255.0 * 255.0) / 2 - 10 * np.log10(mse) 
