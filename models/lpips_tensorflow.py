@@ -171,18 +171,9 @@ def linear_model(input_image_size):
         image_size = input_image_size // (2 ** ii)
 
         model_input = Input(shape=(channel, image_size, image_size), dtype='float32')
-        # Convert from NCHW to NHWC format
-        x = Permute((2, 3, 1))(model_input)
-        x = Dropout(rate=0.5, dtype='float32')(x)
-        x = Conv2D(filters=1, 
-                  kernel_size=1, 
-                  strides=1, 
-                  use_bias=False, 
-                  dtype='float32',
-                  data_format='channels_last', 
-                  name=name)(x)
-        # Convert back to NCHW format
-        model_output = Permute((3, 1, 2))(x)
+        model_output = Dropout(rate=0.5, dtype='float32')(model_input)
+        model_output = Conv2D(filters=1, kernel_size=1, strides=1, use_bias=False, dtype='float32',
+                              data_format='channels_first', name=name)(model_output)
         inputs.append(model_input)
         outputs.append(model_output)
 

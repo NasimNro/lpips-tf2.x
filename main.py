@@ -83,12 +83,6 @@ def main():
     slice67 = './imgs/brain_slice67.png'
     slice68 = './imgs/brain_slice68.png'
 
-    berg = './imgs/berg.jpg'
-    landschaft = './imgs/landschaft.jpeg'
-
-    original_lung = './imgs/lungImgs/extracted_images/original_2.png'
-    predicted_lung = './imgs/lungImgs/extracted_images/prediction_2.png'
-    
     print('Brain Slice Image Quality Metrics')
     print('=' * 50)
     
@@ -147,11 +141,6 @@ def main():
     metrics = calculator.calculate_metrics(slice65, slice68)
     print_metrics('Slice 65 vs 68', metrics)
 
-    metrics = calculator.calculate_metrics(berg, landschaft)
-    print_metrics('berg vs landschaft', metrics)
-
-    metrics = calculator.calculate_metrics(original_lung, predicted_lung)
-    print_metrics('original lung vs predicted lung', metrics)
 
 if __name__ == "__main__":
     main()
