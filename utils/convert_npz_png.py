@@ -3,7 +3,7 @@ import argparse
 import numpy as np
 from PIL import Image
 
-def convert_npz_to_png(npz_path, index, output_dir='./imgs/Real_Data/saved_images'):
+def convert_npz_to_png(npz_path, index, output_dir='./imgs/conver_pnz_png'):
     """
     Speichert ein spezifisches Bildpaar aus einer NPZ-Datei.
     
