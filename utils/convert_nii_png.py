@@ -26,8 +26,8 @@ def convert_nii_to_png(input_path: str, output_path: str, slice_idx: int = None)
         print(f"Error during conversion: {str(e)}")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Convert NIfTI to PNG')
-    parser.add_argument('input', help='Input NIfTI file path')
+    parser = argparse.ArgumentParser(description='Convert NII to PNG')
+    parser.add_argument('input', help='Input NII file path')
     parser.add_argument('output', help='Output PNG file path')
     parser.add_argument('--slice', type=int, help='Slice index (default is middle slice)')
     

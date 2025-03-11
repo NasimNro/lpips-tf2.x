@@ -16,6 +16,9 @@ def calculate_psnr(image1: np.ndarray, image2: np.ndarray) -> float:
     
     mse = np.mean((image1 - image2) ** 2)
     if mse == 0:
-        return float('inf')
+        return float('inf')  # Unendlicher PSNR bei identischen Bildern
     
-    return 20 * np.log10(255.0 * 255.0) / 2 - 10 * np.log10(mse) 
+    peak = 255.0  # Für 8-Bit Bilder (kann mit np.max(image1) verallgemeinert werden)
+    psnr = 10 * np.log10((peak ** 2) / mse)
+    
+    return psnr

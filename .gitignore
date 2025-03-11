@@ -136,3 +136,6 @@ imgs/Real_Data/
 imgs/Real_Data/*
 imgs/Real_Data/*/test_results.npz
 imgs/Real_Data/K6_*.py
+
+# Project specific
+imgs/lungImgs/
