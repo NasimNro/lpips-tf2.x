@@ -1,13 +1,55 @@
 import os
 import cv2
 from metrics.lpips_wrapper import LPIPSMetric
+from metrics.ssim import calculate_ssim
+from metrics.psnr import calculate_psnr
 from utils.image_distortions import (
     add_gaussian_noise,
     add_salt_pepper_noise,
     add_gaussian_blur,
     add_motion_blur,
-    calculate_metrics_for_pair
 )
+from dataclasses import dataclass
+import numpy as np
+import tensorflow as tf
+
+@dataclass
+class ImageMetrics:
+    lpips: float
+    psnr: float
+    ssim: float
+
+def prepare_for_lpips(image: np.ndarray) -> tf.Tensor:
+    """Prepare image for LPIPS calculation."""
+    # Convert to grayscale if it's RGB
+    if len(image.shape) == 3:
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # Normalize to [0, 255] float32
+    image = image.astype(np.float32)
+    # Add batch and channel dimensions
+    img = tf.constant(image[None, ..., None], dtype=tf.float32)
+    # Repeat to create 3 channels
+    img = tf.repeat(img, 3, axis=-1)
+    return img
+
+def calculate_metrics_for_pair(calculator: LPIPSMetric, original: np.ndarray, distorted: np.ndarray) -> ImageMetrics:
+    """Calculate metrics between original and distorted images"""
+    original_tf = prepare_for_lpips(original)
+    distorted_tf = prepare_for_lpips(distorted)
+    
+    # Convert to grayscale if needed for PSNR and SSIM
+    if len(original.shape) == 3:
+        original_gray = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
+        distorted_gray = cv2.cvtColor(distorted, cv2.COLOR_BGR2GRAY)
+    else:
+        original_gray = original
+        distorted_gray = distorted
+    
+    lpips = calculator.calculate_lpips(original_tf, distorted_tf)
+    psnr = calculate_psnr(original_gray, distorted_gray)
+    ssim = calculate_ssim(original_gray, distorted_gray)
+    
+    return ImageMetrics(lpips=lpips, psnr=psnr, ssim=ssim)
 
 def analyze_distortions():
     # Initialize LPIPS metric calculator

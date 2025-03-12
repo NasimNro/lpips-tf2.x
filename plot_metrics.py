@@ -1,6 +1,7 @@
 import json
 import matplotlib.pyplot as plt
 import argparse
+import numpy as np
 
 def plot_metrics(input_file: str, output_file: str) -> None:
     try:
@@ -8,8 +9,8 @@ def plot_metrics(input_file: str, output_file: str) -> None:
         with open(input_file, 'r') as f:
             data = json.load(f)
 
-        # Create figure with three subplots
-        fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(10, 12))
+        # Create figure with four subplots
+        fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1, figsize=(10, 16))
         fig.suptitle('Metrics vs Distance from Middle Slice')
 
         # Plot LPIPS
@@ -29,6 +30,20 @@ def plot_metrics(input_file: str, output_file: str) -> None:
         ax3.set_ylabel('SSIM')
         ax3.set_xlabel('Distance from Middle Slice')
         ax3.grid(True)
+
+        # Normalize and plot all metrics together
+        lpips_norm = (data['lpips'] - np.min(data['lpips'])) / (np.max(data['lpips']) - np.min(data['lpips']))
+        psnr_norm = (data['psnr'] - np.min(data['psnr'])) / (np.max(data['psnr']) - np.min(data['psnr']))
+        ssim_norm = (data['ssim'] - np.min(data['ssim'])) / (np.max(data['ssim']) - np.min(data['ssim']))
+        
+        # Flip LPIPS (1 - lpips_norm) since lower LPIPS means better quality
+        ax4.plot(data['slice_indices'], 1 - lpips_norm, 'b-', label='LPIPS')
+        ax4.plot(data['slice_indices'], psnr_norm, 'g-', label='PSNR')
+        ax4.plot(data['slice_indices'], ssim_norm, 'r-', label='SSIM')
+        ax4.set_ylabel('Normalized Metrics')
+        ax4.set_xlabel('Distance from Middle Slice')
+        ax4.grid(True)
+        ax4.legend()
 
         # Adjust layout and save
         plt.tight_layout()

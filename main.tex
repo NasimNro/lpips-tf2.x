@@ -1,0 +1,660 @@
+\documentclass[a4paper,12pt]{article}
+
+% Encoding and Language
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman, english]{babel}
+
+% Page Layout
+\usepackage{geometry}
+
+% Formatting and Spacing
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{microtype}
+
+% Mathematics
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Graphics and Figures
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage[font=itshape]{caption}
+
+% Tables
+\usepackage{booktabs}
+\usepackage{array}
+
+% Code Listings
+\usepackage{listings}
+\usepackage{xcolor}
+
+% References and Citations
+\usepackage[backend=biber,style=numeric,citestyle=numeric]{biblatex}
+
+\addbibresource{Document/Bibliography/literatur.bib}
+
+% Hyperlinks
+\usepackage{hyperref}
+\usepackage{xurl}
+
+% Quotes
+\usepackage[autostyle=true,german=quotes]{csquotes}
+
+% Page Headers and Footers
+\usepackage{scrlayer-scrpage}
+
+% Lists
+\usepackage{enumitem}
+
+% Trees and Diagrams
+\usepackage{forest}
+
+\geometry{
+    left=2.5cm,   
+    right=2.5cm,  
+    top=2.5cm,    
+    bottom=2.5cm  
+}
+
+\begin{document}
+\onehalfspacing
+
+\begin{titlepage}
+    \begin{center}
+        \includegraphics[width=0.55\textwidth]{Images/Template/HsKa_new.png}\\[16ex]
+        \huge{\textbf{Project Report}}\\[8ex]
+        \vspace{4ex}
+        \LARGE{\textbf{Evaluation Metrics for Synthetic MRI Image Similarity}}\\[4ex]
+
+        \normalsize{}
+        \begin{tabular}{lll}
+            Student:                & \quad Nasim Habash                                    &  \\[2ex]     
+            Matrikelnumber:         & \quad 85339                                           & \\[2ex]   
+            University:             & \quad Hochschule Karlsruhe – Technik und Wirtschaft   &       \\[2ex]
+            Course:                 & \quad Computer Science                                &       \\[2ex]
+            Semester:               & \quad Wintersemester 2024/2025                        &       \\[2ex]
+            Lecturer:               & \quad Prof. Dr. rer. nat. Britta Nestler              &       \\[2ex]
+            Supervisor:             & \quad Muhammed Saadeddin Kocak                        &       \\[2ex]
+            
+        \end{tabular}
+    \end{center}
+\end{titlepage}
+\newpage
+
+\pagenumbering{gobble}    
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+\section{Abstract}
+This work investigates various metrics for evaluating the quality of synthetic MRI images. The focus was on comparing traditional metrics like SSIM and PSNR with newer CNN-based approaches, particularly LPIPS. The investigations were conducted on two datasets: BrainImages and LungImages.
+The results show that LPIPS is particularly effective at detecting perceptual differences that are often overlooked by traditional metrics. In analyzing distortions such as Gaussian noise and salt-and-pepper noise, LPIPS demonstrated higher sensitivity than SSIM and PSNR. Experiments with super-resolution algorithms also confirmed LPIPS's effectiveness in assessing image quality.
+Studies on the LungImages dataset, generated using various VAE-GAN networks, demonstrated LPIPS's consistency in evaluating synthetic images. The metric proved especially valuable for quality assurance in medical imaging applications.
+
+\section{Motivation and Context}
+In medical imaging, it's important to ensure that synthetic MRI images are of high quality and reliable. Traditionally, metrics like Mean Squared Error (MSE), Structural Similarity Index (SSIM) \cite{zhou_wang_image_2004}, and Peak Signal-to-Noise Ratio (PSNR) \cite{zhou_wang_image_2004} are used to compare images. However, these metrics have limitations. MSE focuses on pixel differences and ignores the overall image structure. SSIM captures local similarities but can miss global details. PSNR measures signal-to-noise but doesn't match well with how humans perceive image quality. To overcome these issues, our project explored advanced metrics that look at both structural accuracy and how realistic images appear. We researched three metrics: Perceptual Loss \cite{johnson_perceptual_2016}, Compound Fréchet Inception Distance (CFID) \cite{nunn_compound_nodate}, and Learned Perceptual Image Patch Similarity (LPIPS) \cite{zhang_unreasonable_2018}. While we researched all three, we only included LPIPS in our experiments. This report focuses on how LPIPS performs in practice, showing its strengths and potential for ensuring the quality and usefulness of synthetic images in medical settings.
+
+
+\section{State of Research}
+\subsection{Traditional Image Quality Metrics}
+
+In addition to advanced perceptual metrics, traditional image quality metrics such as the Structural Similarity Index (SSIM) \cite{zhou_wang_image_2004} and Peak Signal-to-Noise Ratio (PSNR) \cite{zhou_wang_image_2004} have long been used in the evaluation of image quality. These metrics provide a foundational understanding of image fidelity and are commonly employed due to their simplicity and computational efficiency.
+
+\subsubbsection{Structural Similarity Index (SSIM)}
+
+The Structural Similarity Index (SSIM) is a perceptual metric that quantifies image quality degradation based on changes in structural information \cite{zhou_wang_image_2004}. Unlike simple pixel-wise comparisons, SSIM considers changes in luminance, contrast, and structure, making it more aligned with human visual perception.
+
+\subsubsection{Mechanism and Design}
+
+SSIM evaluates the similarity between two images by comparing local patterns of pixel intensities that have been normalized for luminance and contrast. The SSIM index is calculated using the following formula \cite{zhou_wang_image_2004}:
+
+$$
+\text{SSIM}(x, y) = \frac{(2\mu_x\mu_y + C_1)(2\sigma_{xy} + C_2)}{(\mu_x^2 + \mu_y^2 + C_1)(\sigma_x^2 + \sigma_y^2 + C_2)},
+$$
+
+where \( \mu_x \) and \( \mu_y \) are the average intensities of images \( x \) and \( y \), \( \sigma_x^2 \) and \( \sigma_y^2 \) are the variances, and \( \sigma_{xy} \) is the covariance between the images. \( C_1 \) and \( C_2 \) are constants to stabilize the division.
+
+SSIM values range from -1 to 1, where 1 indicates perfect similarity and values closer to -1 indicate greater dissimilarity. This metric is particularly useful for assessing image quality in scenarios where structural fidelity is crucial.
+
+\subsubsection{Peak Signal-to-Noise Ratio (PSNR)}
+
+Peak Signal-to-Noise Ratio (PSNR) is a widely used metric for measuring the quality of reconstructed images, particularly in the context of lossy compression \cite{zhou_wang_image_2004}. PSNR is derived from the Mean Squared Error (MSE) and provides a logarithmic scale to express the ratio between the maximum possible power of a signal and the power of corrupting noise.
+
+\subsubsection{Mechanism and Design}
+
+PSNR is calculated using the following formula:
+
+$$
+\text{PSNR} = 20 \cdot \log_{10} \left(\frac{\text{MAX}_I}{\sqrt{\text{MSE}}}\right),
+$$
+
+where \( \text{MAX}_I \) is the maximum possible pixel value of the image (e.g., 255 for 8-bit images), and MSE is the Mean Squared Error between the original and distorted images. MSE is defined as:
+
+$$
+\text{MSE} = \frac{1}{mn} \sum_{i=0}^{m-1} \sum_{j=0}^{n-1} [I(i,j) - K(i,j)]^2,
+$$
+
+where \( I \) and \( K \) are the original and distorted images, respectively, and \( m \) and \( n \) are the dimensions of the images.
+
+Higher PSNR values generally indicate better image quality, with typical values for lossy image compression ranging between 30 and 50 dB. While PSNR is a straightforward and easy-to-compute metric, it does not always correlate well with perceived visual quality, as it focuses primarily on pixel-wise differences.
+
+\subsection{CNN based Methods}
+\subsubsection{Perceptual Loss}
+
+Perceptual loss is a metric originally designed to guide the training of generative models, such as those used for style transfer, super-resolution, and image synthesis \cite{johnson_perceptual_2016}. Using high-level features extracted from pre-trained convolutional neural networks (CNNs) \cite{oshea_introduction_2015}, perceptual loss encourages generated images to align with the content and structure of target images. Unlike traditional pixel-wise metrics, such as Mean Squared Error (MSE), perceptual loss emphasizes perceptual and semantic differences and pleasing results. Although primarily used as a loss function during training, perceptual loss can also be adapted as a standalone metric to evaluate the similarity between real and synthetic images. In the context of MRI image evaluation, this adaptation allows us to compare the structural integrity and semantic coherence of the generated images with the real ones.
+
+\subsubsection{Mechanism and Design}
+
+Perceptual loss operates by comparing feature maps extracted from intermediate layers of a pretrained CNN, often VGG or ResNet models trained on large-scale datasets like ImageNet. These feature maps represent high-level abstractions of the image, including textures, shapes, and semantic content \cite{simonyan_very_2015, krizhevsky_imagenet_2017, he_deep_2015}.
+
+The similarity of high-level features between a generated image (\(\hat{y}\)) and a target image (\(y\)). Given the activations \(\phi_j(x)\) of the \(j\)-th layer of the loss network \(\phi\), the feature reconstruction loss is defined as:
+\[
+\mathcal{L}_{\text{feat}} = \frac{1}{C_j H_j W_j} \sum_{c,h,w} \left\| \phi_j(\hat{y})_{c,h,w} - \phi_j(y)_{c,h,w} \right\|^2,
+\]
+where \(C_j\), \(H_j\), and \(W_j\) stand for the channel, height, and width dimensions of the feature map.
+
+\subsubsection{Experiments and Results}
+
+Johnson et al. \cite{johnson_perceptual_2016} first introduced perceptual loss in the context of style transfer and super-resolution tasks. Their experiments highlighted the advantages of perceptual loss over traditional pixel-wise losses:
+
+\begin{itemize}
+    \item \textbf{Style Transfer}: In this task, perceptual loss was used to train networks that transform an input image by preserving its content while applying the style of another image. Compared to traditional optimization-based methods, networks trained with perceptual loss produced results of comparable quality but were three orders of magnitude faster during inference.
+    
+    \item \textbf{Super-Resolution}: Perceptual loss was applied to reconstruct high-resolution images from low-resolution inputs. Compared to models trained with pixel-wise losses (e.g., MSE), networks trained with perceptual loss reconstructed finer details and sharper edges. For example, when reconstructing textures such as hair or fur, models using perceptual loss generated visually pleasing results, even when metrics like PSNR and SSIM did not show improvement.
+\end{itemize}
+
+\subsubsection{Compound Fréchet Inception Distance (CFID)}
+
+The Compound Fréchet Inception Distance (CFID) is an advanced version of the Fréchet Inception Distance (FID), introduced by Nunn et al. \cite{nunn_compound_nodate} to better assess the quality of images generated by Generative Adversarial Networks (GANs). CFID uses the Inception-V3 model to extract features at various levels of abstraction and computes the Fréchet distance between the feature distributions. This approach allows for a more comprehensive evaluation of image quality by considering both local and global image features.
+
+\subsubsection{Mechanism and Design}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{Images/image1.png}
+    \caption{\textit{Inception-V3 block diagram showing all three CFID feature vectors extracted from the pooling layers at the end of each inception module. CFID numbers refer to the order of their corresponding inception block.}}
+\end{figure}
+
+CFID begins by passing both real and generated images through the Inception-V3 model. Features are extracted from three key layers, each representing a specific level of abstraction \cite{nunn_compound_nodate}. 
+
+\begin{enumerate}
+    \item \textbf{CFID1:} Corresponds to low-level features from the first max-pooling layer of the Inception-V3 model, capturing fine details such as textures and edges.
+    \item \textbf{CFID2:} Uses features from the second max-pooling layer and focuses on mid-level features, representing structural patterns like shapes and contours.
+    \item \textbf{CFID3:} Based on features from the global average pooling layer, summarizing global characteristics such as semantic content and overall structure.
+\end{enumerate}
+
+For each of these feature levels, CFID computes the mean (\(\mu\)) and covariance (\(\Sigma\)) of the feature distributions for real and generated images. The Fréchet distance for each level is then calculated using the formula:
+
+\[
+D^2 = \|\mu_r - \mu_g\|^2 + \text{Tr}(\Sigma_r + \Sigma_g - 2(\Sigma_r \Sigma_g)^{1/2}),
+\]
+
+where \(\mu_r\) and \(\mu_g\) are the means of the real and generated feature distributions, and \(\Sigma_r\) and \(\Sigma_g\) are their respective covariances. To ensure consistency, the features extracted from different layers are normalized to account for variations in dimensionality. The Fréchet distances computed for the three levels are then combined to produce the final CFID score. In some implementations, the highest distance among the three levels is selected as the final score, emphasizing the most significant deviation.
+
+\subsubsection{Experiments and Results}
+
+Nunn et al.~\cite{nunn_compound_nodate} conducted experiments to evaluate how well CFID performs in detecting image distortions and compared it to FID. The experiments focused on controlled distortions, such as Gaussian noise, Gaussian blur, spiral warping, and salt-and-pepper noise.
+
+The results showed that CFID was better at identifying a wider range of issues compared to FID. Each level of CFID contributed uniquely: low-level features captured small details like noise or texture problems, mid-level features detected issues like distorted edges, and high-level features identified global changes like blurring. This multi-level approach allowed CFID to analyze images more comprehensively.
+
+For example, when Gaussian noise was added to the images, CFID2 reacted strongly to the localized distortions, while CFID1 and CFID3 were less sensitive at lower noise levels. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Images/image2.png}
+    \caption{\textit{CFID results for an image with increasing levels of Gaussian noise. }}
+    \label{fig:gaussian_noise}
+\end{figure}
+
+In the case of Gaussian blur, CFID3 was the most sensitive, as blurring affects the overall structure of the image. CFID1 and CFID2 showed less sensitivity compared to CFID3, reflecting their focus on localized and mid-level features rather than global patterns.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Images/image3.png}
+    \caption{\textit{An example of CFID results for increasing levels of Gaussian blur.}}
+    \label{fig:gaussian_blur}
+\end{figure}
+
+For spiral warping, CFID3 reacted strongly, as the distortion introduced significant structural changes in the mid-level features. CFID1 and CFID2 were less responsive.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Images/image4.png}
+    \caption{\textit{An example of CFID results for increasing levels of spiral warping. }}
+    \label{fig:spiral_warping}
+\end{figure}
+
+Salt and pepper noise is a local disturbance and can be extracted by low and mid-level features. In Fig. 5, we see that CFID1 and CFID3 are showing meaningful distances. Hence, for the salt and pepper noise, we can use CFID2.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Images/image5.png}
+    \caption{\textit{An example of CFID results for increasing levels of Salt and Pepper Noise. }}
+    \label{fig:spiral_warping}
+\end{figure}
+
+These experiments highlight the unique contributions of each CFID feature level in detecting different types of distortion. Although CFID demonstrated its effectiveness in analyzing various distortions, the authors noted that it is more computationally demanding than FID. This makes CFID more suitable for in-depth analyses rather than quick evaluations.
+
+\subsubsection{Learned Perceptual Image Patch Similarity (LPIPS)}
+LPIPS is designed to measure perceptual similarity by comparing images based on deep feature representations from neural networks like VGG and AlexNet \cite{zhang_unreasonable_2018}. Unlike CFID, which evaluates distributions, LPIPS directly measures the feature-wise distance between image patches. The metric is grounded in the idea that feature activations in deep networks capture perceptual properties that align with human visual judgments. LPIPS works by extracting features from multiple layers of a pre-trained network. These features are normalized and weighted to calculate a perceptual distance between two images. Instead of relying on pixel-wise differences, LPIPS evaluates similarities in patterns, textures, and structures. This makes it particularly effective in capturing perceptual differences that traditional metrics like SSIM or PSNR often miss.
+
+\subsubsection{Mechanism and Design}
+
+LPIPS measures the perceptual similarity between two images, \(x\) (reference) and \(x'\) (distorted), by comparing their deep feature representations extracted from a pre-trained convolutional neural network (CNN) such as AlexNet, VGG, or SqueezeNet \cite{zhang_unreasonable_2018}. These networks process the images layer by layer, capturing different types of information. The lower layers focus on fine details such as edges and textures, while the higher layers capture broader patterns like shapes and overall structure. The method starts by passing both images through the network to extract feature maps at selected layers. These feature maps are normalized along the channel dimension to ensure fair comparisons across channels. The normalized features are then weighted using a set of learned weights, \(w_l\), trained to align the metric with human judgments of perceptual similarity. These weights emphasize features that are more relevant to how humans perceive image quality.
+
+The similarity between the images is calculated by computing the difference between their feature maps at each layer. The element-wise difference is squared and averaged across the spatial dimensions (width and height) of the feature maps, giving the perceptual difference at each layer. The differences from all layers are then combined, weighted by their learned importance, to produce the final LPIPS score:
+
+\[
+d(x, x') = \sum_{l} \frac{1}{H_l W_l} \sum_{h,w} \left\| w_l \odot \left( y_l(x)_{h,w} - y_l(x')_{h,w} \right) \right\|_2^2,
+\]
+where \(y_l(x)\) and \(y_l(x')\) are the feature maps of \(x\) and \(x'\) at layer \(l\), \(H_l\) and \(W_l\) are the height and width of the feature maps, and \(w_l\) are the learned channel-wise weights.
+
+Three variants of LPIPS were proposed to suit different use cases:
+\begin{enumerate}
+    \item \textbf{Linear}: Uses feature activations from a pretrained CNN with learned linear weights \(w_l\) trained on the BAPPS dataset to align with human perceptual judgments.
+    \item \textbf{Scratch}: The CNN is trained from scratch on the BAPPS dataset, without using pretrained weights.
+    \item \textbf{Tune}: Fine-tunes the entire pretrained CNN on the BAPPS dataset, optimizing both the network and weights for maximum alignment with human judgments.
+\end{enumerate}
+
+The final LPIPS score reflects how similar the two images are in terms of perception. Smaller scores indicate higher perceptual similarity, while larger scores suggest noticeable differences. By offering these three variants, LPIPS allows flexibility for different levels of computational complexity and alignment with human perception.
+
+\subsubsection{Experiments and Results}
+
+To evaluate the effectiveness of LPIPS, Zhang et al. \cite{zhang_unreasonable_2018} conducted extensive experiments across various tasks and datasets, comparing it to traditional metrics such as SSIM and PSNR. The results demonstrated that LPIPS aligns closely with human judgments of perceptual similarity, outperforming these classical approaches in key areas.
+
+The experiments were designed to test LPIPS in two primary categories of distortions:
+1. Basic distortions: Controlled distortions were applied to images, such as Gaussian noise, blur, and CNN-based distortions.
+2. Real Algorithms: Outputs from real algorithms, including Frame Interpolation, Video Deblurring, Colorization and Superresolution models.
+
+The BAPPS dataset provided the ground truth for these experiments, with human ratings serving as the gold standard. Metrics were evaluated based on how closely their predictions aligned with human judgments.
+
+Additionally, LPIPS was compared against features from alternative CNN architectures trained in various ways:
+- Self-supervised models, such as BiGAN, Puzzle-solving, and Watching tasks, which aim to capture meaningful features without labeled data.
+- Supervised models, such as AlexNet and VGG, which were either fine-tuned (Tune), trained from scratch (Scratch), or used with fixed pre-trained weights (Linear).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Images/image6.png}
+    \caption{\textit{Quantitative comparison across metrics on distortions and real algorithms. (Left) Results averaged for traditional and CNN-based distortions. (Right) Results averaged across 4 real algorithm sets. }}
+    \label{fig:lpips_results}
+\end{figure}
+
+Traditional metrics like SSIM and PSNR performed poorly, with scores significantly below human judgments (black bar).
+Features extracted from self-supervised models, such as BiGAN, Puzzle, and Watching, showed improvement over SSIM and PSNR. However, they fell short compared to LPIPS variants.
+LPIPS (linear) showed strong performance with minimal additional training.
+LPIPS (tune) achieved the highest alignment with human judgments, benefiting from fine-tuning.
+LPIPS (scratch) performed slightly worse than Tune, indicating the importance of pre-trained features.
+Similar trends were observed for real algorithm outputs.
+LPIPS (tune) again emerged as the top-performing variant, highlighting its ability to evaluate perceptual realism in complex tasks.
+
+\subsection{Comparison and Recommendation}
+We reviewed three metrics for comparing synthetic and real MRI images: Perceptual Loss \cite{johnson_perceptual_2016}, Compound Fréchet Inception Distance (CFID) \cite{nunn_compound_nodate}, and Learned Perceptual Image Patch Similarity (LPIPS) \cite{zhang_unreasonable_2018}. Each metric has its own strengths and weaknesses when it comes to evaluating the quality of synthetic images.
+
+Perceptual Loss works well for capturing high-level details and structural features using pretrained convolutional neural networks (CNNs) . It is particularly useful during the training of generative models, such as in super-resolution or style transfer. However, it is not commonly used on its own to evaluate the quality of synthetic images after training, as it may miss smaller distortions or differences that are important.
+
+CFID is an improved version of the Fréchet Inception Distance and is designed to evaluate image quality across multiple levels of features. It is good at detecting issues like noise, blurring, or structural changes by analyzing fine details, patterns, and overall structure. While it is very effective for assessing entire datasets, it is less suited for comparing individual image pairs, as it focuses on overall distributions rather than direct comparisons.
+
+LPIPS compares features between two images to measure how visually similar they appear . It aligns well with human perception, making it a reliable choice for tasks that require synthetic images to look realistic. This makes LPIPS particularly useful for comparing individual synthetic MRI images with real ones.
+
+Based on these findings, I recommend using LPIPS as the main metric for comparing synthetic and real MRI images. It effectively captures differences in a way that reflects how humans evaluate images and ensures that important details are preserved. CFID can be used alongside LPIPS to analyze entire datasets and identify specific types of distortions. While Perceptual Loss is helpful during model training, it is not as practical for evaluating image quality once the models have been trained.
+
+\section{Methods}
+
+\subsection{Traditional Image Distortion Methods}
+To systematically evaluate the performance of our metrics, we implemented several traditional image distortion methods using OpenCV and NumPy. The implementation was done in Python, with careful consideration for numerical stability and reproducibility.
+
+\subsubsection{Gaussian Noise}
+Gaussian noise was implemented using NumPy's random normal distribution. The noise is added directly to the image pixels with clipping to ensure valid pixel values:
+
+\begin{verbatim}
+noise = np.random.normal(mean, sigma, image.shape)
+noisy_image = np.clip(image + noise, 0, 255).astype(np.uint8)
+\end{verbatim}
+
+We tested different noise levels with σ values of 15, 25, 35, and 45, while keeping the mean at 0. The clipping operation ensures that the resulting pixel values remain within the valid range [0, 255].
+
+\subsubsection{Salt and Pepper Noise}
+This type of noise was implemented using NumPy's random number generator to create binary masks for salt (white) and pepper (black) pixels:
+
+\begin{verbatim}
+salt = np.random.random(image.shape) < prob
+pepper = np.random.random(image.shape) < prob
+noisy[salt] = 255
+noisy[pepper] = 0
+\end{verbatim}
+
+We experimented with probability values of 0.01, 0.02, 0.03, and 0.04, where the probability represents the likelihood of a pixel being corrupted by either salt or pepper noise.
+
+\subsubsection{Gaussian Blur}
+Gaussian blur was implemented using OpenCV's GaussianBlur function, which applies a 2D Gaussian convolution:
+
+\begin{verbatim}
+cv2.GaussianBlur(image, (kernel_size, kernel_size), 0)
+\end{verbatim}
+
+The blur intensity was controlled by the kernel size, and we used square kernels of sizes 3×3, 5×5, 7×7, and 9×9 pixels. The standard deviation of the Gaussian filter was automatically computed based on the kernel size.
+
+\subsubsection{Motion Blur}
+Motion blur was implemented using a custom horizontal motion kernel and OpenCV's filter2D function:
+
+\begin{verbatim}
+kernel = np.zeros((size, size))
+kernel[int((size-1)/2), :] = np.ones(size)
+kernel = kernel / size
+cv2.filter2D(image, -1, kernel)
+\end{verbatim}
+
+We tested motion blur with kernel sizes of 8, 12, 16, and 20 pixels. The kernel is designed to simulate horizontal motion, with the size parameter controlling the length of the motion trail.
+
+
+\subsection{Super-Resolution Methods}
+We evaluated four state-of-the-art super-resolution methods, using their pre-trained implementations available on Hugging Face:
+\subsubsection{RCAN (Residual Channel Attention Networks)}
+RCAN \cite{zhang_image_2018} is a deep learning model that uses channel attention mechanisms to improve image super-resolution. It processes images through multiple residual blocks while paying special attention to important channel features. The network is particularly effective at handling the varying importance of different image features during the super-resolution process.
+\subsubsection{SRFlow}
+SRFlow \cite{lugmayr_srflow_2020} takes a unique approach to super-resolution by using normalizing flows. Unlike deterministic methods, it can generate multiple possible high-resolution versions of a single low-resolution input. This is particularly useful in medical imaging where multiple plausible interpretations of the high-resolution image might be valid.
+\subsubsection{SRGAN}
+SRGAN \cite{ledig_photo-realistic_2017} uses a generative adversarial network approach for super-resolution. It consists of two competing networks: one that generates high-resolution images and another that tries to distinguish between real and generated images. This competition helps produce more realistic-looking results compared to traditional methods.
+\subsubsection{VDSR (Very Deep Super-Resolution)}
+VDSR \cite{kim_accurate_2016} is a straightforward but effective deep learning approach that focuses on learning the differences between low and high-resolution images. Its deep architecture helps capture complex relationships between input and output resolutions, making it particularly effective for medical imaging applications.
+For our experiments, we utilized these models through their pre-trained implementations available on Hugging Face, applying them to our medical image datasets to evaluate their effectiveness in improving image resolution while maintaining important diagnostic features.
+
+
+\section{Lung MRI Dataset generation}
+
+To generate synthetic lung MRI images, we employ a Variational Autoencoder with a Generative Adversarial Network (VAE-GAN). This model learns a probabilistic representation of real lung MRI slices and generates synthetic samples that resemble real MRI data. The overall architecture of the model is illustrated in Figure~\ref{fig:vae-gan-architecture}.
+
+\subsection{Overview of the Architecture}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Images/VAE-GAN/VAE-GAN-Architekture.png}
+    \caption{Model Architecture. The VAE-GAN model consists of an encoder, decoder, and discriminator, trained to generate synthetic MRI slices by mapping images to a latent space, performing interpolation, and reconstructing realistic outputs.}
+    \label{fig:vae-gan-architecture}
+\end{figure}
+
+The VAE-GAN consists of three main components:
+\begin{enumerate}
+    \item \textbf{Encoder}: A convolutional neural network (CNN) that encodes a real MRI slice \( x \) into a latent representation \( z \).
+    \item \textbf{Decoder}: A CNN that reconstructs an MRI slice from its latent space representation.
+    \item \textbf{Discriminator}: A GAN-based network that distinguishes between real and generated MRI slices, ensuring that synthetic images closely match the distribution of real MRIs.
+\end{enumerate}
+
+\subsection{Encoding and Latent Space Representation}
+As shown in Figure~\ref{fig:vae-gan-architecture}, the encoder maps an input MRI slice \( x \) to a latent space representation \( z \), which follows a probabilistic distribution:
+
+\[
+    q_{\phi}(z|x) = \mathcal{N}(\mu_x, \sigma_x^2 I)
+\]
+
+where \( \mu_x \) and \( \sigma_x \) are the learned mean and variance parameters defining the latent space distribution. This latent space enables smooth interpolation between slices, which is essential for generating synthetic MRI images.
+
+\subsection{Decoding and MRI Reconstruction}
+The decoder reconstructs an MRI slice from its latent representation, generating a new synthetic MRI slice:
+
+\[
+    \hat{x} = D_{\theta}(z)
+\]
+
+This process allows the model to generate realistic MRI slices from random latent vectors, effectively synthesizing new images.
+
+\subsection{Adversarial Training for Realism}
+To ensure that generated images are visually similar to real MRI scans, we incorporate a GAN-based discriminator \( H_{\omega} \), as depicted in Figure~\ref{fig:vae-gan-architecture}. The discriminator is trained to classify real and generated MRI slices, encouraging the generator to improve image quality. The adversarial loss function is given by:
+
+\[
+    L_{\text{adv}} = - \mathbb{E}_{x \sim p_{\text{data}}} [\log H_{\omega}(x)] - \mathbb{E}_{\hat{x} \sim p_{\text{gen}}} [\log (1 - H_{\omega}(\hat{x}))]
+\]
+
+\subsection{Training and Image Generation}
+The complete training process involves minimizing a combination of reconstruction loss, adversarial loss, and latent space regularization:
+
+\[
+    L_{\text{VAE-GAN}} = \alpha L_{\text{recon}} + \beta L_{\text{adv}} + \gamma L_{\text{prior}}
+\]
+
+where:
+\begin{itemize}
+    \item \( L_{\text{recon}} = ||x - \hat{x}||_1 \) ensures accurate reconstruction.
+    \item \( L_{\text{prior}} \) enforces a structured latent space.
+    \item \( L_{\text{adv}} \) encourages realistic image synthesis.
+\end{itemize}
+
+Once trained, the model generates new synthetic MRI slices by sampling latent vectors \( z \sim \mathcal{N}(0, I) \) and decoding them into images:
+
+\[
+    \hat{x}_{\text{synthetic}} = D_{\theta}(z), \quad z \sim \mathcal{N}(0, I)
+\]
+
+\subsection{Summary}
+The VAE-GAN model provides an effective way to generate synthetic lung MRI images by learning the latent space distribution of real MRIs. Through adversarial training, the model ensures that generated images exhibit realistic anatomical structures, making them suitable for downstream medical imaging applications.
+
+
+
+
+\section{Implementation and Validation}
+
+\subsection{Development Environment}
+Our implementation was developed using Python 3.8 with TensorFlow 2.x as the primary deep learning framework. We utilized TensorFlow for implementing LPIPS and neural network operations, NumPy for efficient numerical computations, OpenCV for image processing and traditional metric calculations, and PIL for image loading and basic manipulations.
+
+\subsection{Image Preprocessing}
+Before applying any similarity metrics, our medical images undergo several preprocessing steps to ensure proper handling of grayscale data. The key preprocessing steps are implemented in our load_image function:
+
+\begin{verbatim}
+def load_image(fn: str, return_numpy: bool = False) -> np.ndarray:
+    image = Image.open(fn)
+    if image.mode != 'RGB':
+        image = image.convert('RGB')
+    image = image.resize((64, 64), Image.Resampling.LANCZOS)
+    image = np.asarray(image)
+    if return_numpy:
+        return image
+    image = np.expand_dims(image, axis=0)
+    return tf.constant(image, dtype=tf.dtypes.float32)
+\end{verbatim}
+
+This preprocessing pipeline handles three critical aspects. First, the grayscale to RGB conversion is performed for our medical images (MRI scans). Since some metrics expect RGB input, each grayscale pixel value is replicated across three channels. For example, a grayscale value of 100 becomes [100, 100, 100] in RGB, preserving the original intensity information while making the images compatible with RGB-based networks.
+
+Second, all images are resized to 64x64 pixels using Lanczos resampling, which ensures consistent input dimensions while maintaining image quality during downsampling. This is particularly important for preserving fine details in medical images.
+
+Finally, the format conversion step transforms images into NumPy arrays for efficient computation, adds an optional batch dimension for deep learning models, and converts to TensorFlow tensors when required.
+
+\subsection{Metric Implementations}
+
+\subsubsection{LPIPS Implementation}
+For our LPIPS metric implementation, we utilized an existing TensorFlow 2.x port of the original LPIPS implementation. The implementation is based on the original LPIPS paper \cite{zhang_unreasonable_2018} and consists of a pre-trained VGG16 network serving as the feature extractor, linear calibration layers for each feature level, and a custom preprocessing pipeline for medical images.
+
+The feature extraction pipeline extracts features from five VGG16 layers, progressing from low-level features to semantic information: block1\_conv2 (64 channels), block2\_conv2 (128 channels), block3\_conv3 (256 channels), block4\_conv3 (512 channels), and block5\_conv3 (512 channels).
+
+The implementation includes specialized preprocessing for medical images:
+
+\begin{verbatim}
+def image_preprocess(image):
+    factor = 255.0 / 2.0
+    center = 1.0
+    scale = tf.constant([0.458, 0.448, 0.450])
+    shift = tf.constant([-0.030, -0.088, -0.188])
+    
+    image = image / factor - center  # [0, 255] -> [-1, 1]
+    image = (image - shift) / scale
+    return image
+\end{verbatim}
+
+This preprocessing performs two critical normalization steps. The range normalization first converts the image from [0, 255] to [-1, 1] range by dividing by 127.5 and subtracting 1.0. Then, ImageNet statistics normalization is applied using channel-wise shift and scaling values.
+
+We integrated this implementation using a wrapper class that provides a clean interface:
+
+\begin{verbatim}
+class LPIPSMetric:
+    def __init__(self, image_size, vgg_ckpt_fn, lin_ckpt_fn):
+        self.model = learned_perceptual_metric_model(
+            image_size, vgg_ckpt_fn, lin_ckpt_fn)
+    
+    def calculate_lpips(self, image1, image2):
+        return self.model([image1, image2]).numpy().item()
+\end{verbatim}
+
+\subsubsection{SSIM Implementation}
+Our SSIM implementation follows the original paper's methodology with specific adaptations for medical imaging. For color images, we first convert to grayscale:
+
+\begin{verbatim}
+if len(image1.shape) == 3:
+    image1 = cv2.cvtColor(image1, cv2.COLOR_RGB2GRAY)
+    image2 = cv2.cvtColor(image2, cv2.COLOR_RGB2GRAY)
+\end{verbatim}
+
+We implement a configurable Gaussian window for local statistics, using an 11x11 window size and sigma of 1.5 with normalized weights. The SSIM calculation uses carefully chosen constants (k1 = 0.01, k2 = 0.03) and is optimized using OpenCV's filter2D operation.
+
+\subsubsection{PSNR Implementation}
+We implemented PSNR using NumPy for efficient array operations:
+
+\begin{verbatim}
+def calculate_psnr(image1, image2):
+    mse = np.mean((image1 - image2) ** 2)
+    if mse == 0:
+        return float('inf')
+    peak = 255.0
+    return 10 * np.log10((peak ** 2) / mse)
+\end{verbatim}
+
+The implementation includes automatic type conversion to float32, special handling of identical images, and support for 8-bit grayscale images common in medical imaging.
+
+
+
+\section{Results and Analysis}
+\subsection{BrainImages Dataset}
+
+\subsubsection{Traditional Distortions}
+
+\textbf{Gaussian Noise:}  LPIPS showed a score of 0.162, indicating it was quite sensitive to Gaussian noise. This suggests LPIPS can effectively detect changes in image quality due to this type of noise, more so than PSNR and SSIM, which showed less variation.
+
+\textbf{Gaussian Blur:}  LPIPS was able to detect the blur, but its sensitivity was not as high as expected, with a score of 0.003. PSNR and SSIM also detected the blurring, indicating that all metrics captured this distortion to some extent.
+
+\textbf{Salt-and-Pepper Noise:} LPIPS scored 0.237, indicating it noticed differences from the original images. However, SSIM remained relatively high at 0.725, suggesting that LPIPS was not significantly better at detecting this type of noise compared to SSIM.
+
+\textbf{Motion Blur:} LPIPS detected this blur with a score of 0.091, showing moderate sensitivity. While PSNR and SSIM also recognized the blurring, LPIPS provided a similar level of assessment as these traditional metrics.
+
+Overall, as shown in Table \ref{table:traditionsal_distortions}, LPIPS was effective in identifying some perceptual differences caused by these distortions, particularly Gaussian noise. However, its performance was not consistently superior across all types of distortions compared to PSNR and SSIM, highlighting areas where traditional metrics still hold value.
+
+\subsubsection{Super-Resolution Algorithms}
+
+
+\textbf{RCAN (Residual Channel Attention Networks)}:
+In our experiments, RCAN achieved a very low LPIPS score of 0.001, suggesting that there were minimal perceptual differences between the high-resolution images it generated and the original images. This indicates that LPIPS found RCAN to be highly effective in preserving the perceptual quality of the images, showing little to no noticeable changes that would affect human perception \cite{zhang_image_2018}.
+
+\textbf{SRFlow}:
+SRFlow also resulted in a low LPIPS score of 0.001, indicating that the algorithm maintained a high level of perceptual similarity to the original images. This suggests that LPIPS effectively captured the minimal perceptual differences introduced by SRFlow, highlighting its capability to preserve the visual integrity of the images \cite{lugmayr_srflow_2020}.
+
+\textbf{SRGAN (Super-Resolution Generative Adversarial Network)}:
+SRGAN had a slightly higher LPIPS score of 0.006, indicating some perceptual differences from the original images. This suggests that LPIPS was able to detect subtle changes introduced by SRGAN, which focuses on enhancing textures and visual appeal. The higher LPIPS score reflects these perceptual modifications, which are more noticeable compared to RCAN and SRFlow \cite{ledig_photo-realistic_2017}.
+
+\textbf{VDSR (Very Deep Super-Resolution Network)}:
+VDSR achieved a low LPIPS score of 0.002, indicating very few perceptual differences from the original images. LPIPS effectively captured the minimal changes introduced by VDSR, demonstrating its utility in assessing perceptual fidelity while the algorithm enhances image details \cite{kim_accurate_2016}.
+
+Overall, the experiments reveal that LPIPS is a nuanced metric for assessing perceptual differences across various super-resolution algorithms. The LPIPS scores for RCAN, SRFlow, and VDSR were extremely low (0.001 and 0.002), indicating that these algorithms maintained a high level of perceptual similarity to the original images, with minimal perceptual changes detected. This suggests that LPIPS effectively confirmed the preservation of visual fidelity in these cases. For SRGAN, the LPIPS score was slightly higher at 0.006, yet still relatively low, indicating that while there were some perceptual differences, they were minimal. This reflects SRGAN's focus on enhancing textures and visual elements, which LPIPS was able to detect, albeit the changes were subtle.
+
+% \subsubsection{Slice Comparisons}
+
+% To evaluate the consistency of synthetic MRI volumes, we compared a reference slice (Slice 65) with subsequent slices from the same volume. The results, shown in Table \ref{table:slice_comparison}, demonstrate that LPIPS is able to detect subtle differences between slices. For example, LPIPS scores increased from 0.018 for Slice 66 to 0.060 for Slice 69, indicating a gradual decrease in perceptual similarity.
+
+
+
+\subsection{LungImages Dataset}
+
+\subsubsection{Original vs. Prediction}
+
+We measured the metrics between the original images and their synthetic counterparts for each of the six networks. As shown in Tables \ref{table:network1} to \ref{table:network6}, all metrics indicated significant differences between the original and synthetic images. For Network 1, the average LPIPS score was 0.506, suggesting noticeable perceptual differences. Similarly, PSNR and SSIM also showed significant deviations, confirming that all metrics consistently indicated large differences in the quality of the synthetic MRI images.
+
+\subsubsection{Slice Comparisons}
+
+We also evaluated the consistency of the synthetic images across different slices. We compared Slice 1 with subsequent slices (Slice 2, Slice 3, etc.) for both the original and synthetic images. The results in Tables \ref{table:network1} to \ref{table:network6} show that LPIPS, along with PSNR and SSIM, detected substantial differences between slices. For example, the LPIPS score between Slice 1 and Slice 2 for Network 1 was 0.216, increasing to 0.425 by Slice 6, indicating a gradual decrease in similarity. All metrics provided consistent assessments, highlighting significant perceptual and structural differences across the slices.
+
+\subsubsection{conclusion}
+Our experiments show that LPIPS is a useful metric for evaluating the quality of synthetic MRI images, especially when compared to traditional metrics like PSNR and SSIM. While PSNR and SSIM measure pixel-level accuracy, they often fail to detect subtle perceptual differences that are important in medical imaging. LPIPS, however, captures these differences more effectively and aligns better with human perception.
+
+The results demonstrate that LPIPS is particularly sensitive to distortions like Gaussian noise and salt-and-pepper noise, where it showed significant variations compared to the original images. In contrast, traditional metrics like PSNR and SSIM sometimes indicated high similarity, even when visual differences were noticeable. This suggests that LPIPS is better at identifying meaningful perceptual changes that could impact the interpretation of medical images.
+
+When evaluating super-resolution images, LPIPS detected differences that were not always reflected in PSNR and SSIM scores. For example, SRGAN produced images with slight perceptual differences despite having a relatively high PSNR. This shows that LPIPS can provide additional insights into image quality that pixel-based metrics might miss.
+
+Overall, our findings suggest that LPIPS is a valuable tool for assessing the perceptual quality of medical images. While traditional metrics remain useful for measuring reconstruction accuracy, LPIPS provides a complementary perspective by better reflecting human perception.
+
+\subsection{Comparative Analysis}
+After evaluating both traditional metrics (SSIM, PSNR) and LPIPS across our datasets, we can draw several key comparisons:
+
+\subsubsection{Sensitivity to Different Types of Distortions}
+\begin{itemize}
+    \item \textbf{Noise Distortions}: LPIPS showed higher sensitivity to Gaussian noise (0.162) and salt-and-pepper noise (0.237) compared to SSIM (0.727 and 0.725 respectively). This indicates that LPIPS better aligns with human perception of noise artifacts.
+    
+    \item \textbf{Blur Distortions}: All metrics detected Gaussian blur effectively, with LPIPS scoring 0.003, SSIM 0.997, and PSNR 44.80 dB. For motion blur, LPIPS (0.091) showed moderate sensitivity while SSIM (0.928) indicated high similarity.
+\end{itemize}
+
+\subsubsection{Performance on Super-Resolution Tasks}
+The metrics showed different strengths when evaluating super-resolution algorithms:
+
+\begin{itemize}
+    \item \textbf{RCAN and SRFlow}: Both achieved very low LPIPS scores (0.001), indicating excellent perceptual quality. SSIM (0.999 and 0.976) and PSNR (52.96 dB and 48.55 dB) also indicated high quality.
+    
+    \item \textbf{SRGAN}: Showed slightly higher LPIPS scores (0.006) despite good SSIM (0.999), suggesting that LPIPS detected subtle perceptual differences that SSIM missed.
+    
+    \item \textbf{VDSR}: Achieved balanced scores across metrics (LPIPS: 0.002, SSIM: 0.979, PSNR: 50.53 dB).
+\end{itemize}
+
+\subsubsection{Slice Consistency Analysis}
+In analyzing sequential slices:
+
+\begin{itemize}
+    \item \textbf{BrainImages Dataset}: LPIPS showed gradual increase in differences (0.018 to 0.060) across consecutive slices, providing more nuanced differentiation compared to SSIM's broader range (0.976 to 0.750).
+    
+    \item \textbf{LungImages Dataset}: All metrics showed consistent trends across networks, with LPIPS scores averaging around 0.506, indicating significant perceptual differences between original and synthetic images.
+\end{itemize}
+
+\subsubsection{Computational Considerations}
+\begin{itemize}
+    \item \textbf{Traditional Metrics}: SSIM and PSNR are computationally efficient, requiring minimal resources and providing quick results.
+    
+    \item \textbf{LPIPS}: More computationally intensive due to neural network operations, but offers better alignment with human perception.
+\end{itemize}
+
+\subsubsection{Overall Assessment}
+Based on our comprehensive analysis:
+
+\begin{itemize}
+    \item LPIPS provides the most reliable assessment of perceptual quality, particularly for detecting subtle artifacts and distortions.
+    
+    \item Traditional metrics remain valuable for quick quality checks and when computational resources are limited.
+    
+    \item A combination of metrics provides the most comprehensive evaluation, with LPIPS serving as the primary indicator of perceptual quality and traditional metrics offering complementary information about pixel-level fidelity.
+\end{itemize}
+
+This comparative analysis demonstrates that while each metric has its strengths, LPIPS offers the most robust approach for evaluating synthetic MRI images, particularly when perceptual quality is crucial for medical applications.
+
+
+\section{Outlook}
+The results of this work show promising approaches for quality assessment of synthetic MRI images. Future research could focus on the following aspects:
+
+\begin{itemize}
+    \item Optimization of LPIPS computational efficiency for real-time applications
+    \item Integration of multiple metrics into a single, weighted evaluation system
+    \item Development of specialized variants for different medical imaging modalities
+    \item Investigation of correlation between metric scores and clinical usability
+    \item Extension of methodology to 3D image volumes and temporal sequences
+\end{itemize}
+
+
+\newpage
+\input{experiments}
+\newpage
+
+\FloatBarrier
+
+\printbibliography
+\newpage
+
+\addcontentsline{toc}{section}{List of Figures}
+\listoffigures
+\newpage
+
+\addcontentsline{toc}{section}{List of Tables}
+\listoftables
+\newpage
+
+\end{document}

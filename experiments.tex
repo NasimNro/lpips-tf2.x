@@ -1,0 +1,407 @@
+
+\begin{table}[h!]
+    \centering
+    \textbf{Traditional Distortions} \midrule \\
+    \begin{tabular}{ccccc}
+        \textbf{Original} & \textbf{Gaussian Blur} & \textbf{Gaussian Noise} & \textbf{Salt \& Pepper} & \textbf{Motion Blur} \\ \toprule
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/brain_slice.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/brain_slice_gaussian_blur.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/brain_slice_gaussian_noise.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/brain_slice_salt_pepper.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/brain_slice_motion_blur.png} \\ 
+        \textbf{LPIPS} & 0.003 & 0.162 & 0.237 & 0.091 \\ \midrule
+        \multicolumn{5}{c}{\textbf{Super-Resolution Methods}} \\ \midrule
+        \textbf{Original} & \textbf{RCAN} & \textbf{SRFlow} & \textbf{SRGAN} & \textbf{VDSR} \\ \toprule
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/brain_slice.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/superresolution/brain_slice_RCAN.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/superresolution/brain_slice_SRFlow.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/superresolution/brain_slice_SRGAN.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/superresolution/brain_slice_VDSR.png} \\ 
+        \textbf{LPIPS} & 0.001 & 0.001 & 0.006 & 0.002 \\ \bottomrule
+    \end{tabular}
+    \caption{LPIPS Comparison of Traditional Distortions and Super-Resolution Methods on Brain MRI Slice}
+    \label{table:lpips_comparison}
+\end{table}
+
+
+
+\begin{table}[h!]
+    \centering
+    \textbf{Gaussian Noise} \\\midrule\\[5pt]
+    \begin{tabular}{ccccc}
+        \textbf{Original} & \textbf{Sigma 15} & \textbf{Sigma 25} & \textbf{Sigma 35} & \textbf{Sigma 45} \\ \toprule
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/brain_slice.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/gaussian_noise_sigma15.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/gaussian_noise_sigma25.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/gaussian_noise_sigma35.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/gaussian_noise_sigma45.png} \\ 
+        \textbf{LPIPS} & 0.393 & 0.494 & 0.557 & 0.623 \\
+        \textbf{PSNR (dB)} & 29.40 & 24.98 & 22.11 & 20.02 \\
+        \textbf{SSIM} & 0.576 & 0.355 & 0.242 & 0.175 \\\bottomrule
+    \end{tabular}
+    \textbf{Salt \& Pepper} \\\midrule\\[5pt]
+    \begin{tabular}{ccccc}
+        \textbf{Original} & \textbf{Prob 0.01} & \textbf{Prob 0.02} & \textbf{Prob 0.03} & \textbf{Prob 0.04} \\ \toprule
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/brain_slice.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/salt_pepper_prob0.01.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/salt_pepper_prob0.02.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/salt_pepper_prob0.03.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/salt_pepper_prob0.04.png} \\ 
+        \textbf{LPIPS} & 0.405 & 0.479 & 0.532 & 0.563 \\
+        \textbf{PSNR (dB)} & 24.15 & 21.06 & 19.29 & 18.20 \\
+        \textbf{SSIM} & 0.561 & 0.361 & 0.255 & 0.204 \\\bottomrule
+    \end{tabular}
+    \textbf{Gaussian Blur} \\\midrule\\[5pt]
+    \begin{tabular}{ccccc}
+        \textbf{Original} & \textbf{Kernel 3} & \textbf{Kernel 5} & \textbf{Kernel 7} & \textbf{Kernel 9} \\ \toprule
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/brain_slice.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/gaussian_blur_kernel_size3.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/gaussian_blur_kernel_size5.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/gaussian_blur_kernel_size7.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/gaussian_blur_kernel_size9.png} \\ 
+        \textbf{LPIPS} & 0.079 & 0.122 & 0.166 & 0.193 \\
+        \textbf{PSNR (dB)} & 36.90 & 34.24 & 32.07 & 30.92 \\
+        \textbf{SSIM} & 0.971 & 0.947 & 0.915 & 0.893 \\\bottomrule
+    \end{tabular}
+    \textbf{Motion Blur} \\\midrule\\[5pt]
+    \begin{tabular}{ccccc}
+        \textbf{Original} & \textbf{Size 8} & \textbf{Size 12} & \textbf{Size 16} & \textbf{Size 20} \\ \toprule
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/brain_slice.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/motion_blur_size8.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/motion_blur_size12.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/motion_blur_size16.png} & 
+        \includegraphics[width=0.18\textwidth]{Images/brainImgs/traditional_distortions/motion_blur_size20.png} \\ 
+        \textbf{LPIPS} & 0.188 & 0.244 & 0.286 & 0.314 \\
+        \textbf{PSNR (dB)} & 28.40 & 27.15 & 26.19 & 25.47 \\
+        \textbf{SSIM} & 0.843 & 0.806 & 0.779 & 0.758 \\\bottomrule
+    \end{tabular}
+    \caption{Comparison with Different levels of Distortions on Brain MRI Slice}
+    \label{table:distortion_comparison}
+\end{table}
+
+
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{Images/brainImgs/metrics_plot.png}
+    \caption{\textit{Calculated Disatance middel slice for patient 1}}
+\end{figure}
+
+
+
+
+
+
+
+
+% \begin{table}[h!]
+%     \centering
+%     \begin{tabular}{ccccc}
+%         \textbf{Slice 65} & \textbf{Slice 66} & \textbf{Slice 67} & \textbf{Slice 68} & \textbf{Slice 69} \\ \toprule
+%         \includegraphics[width=0.18\textwidth]{Images/brainImgs/executiv_slices/brain_slice65.png} & 
+%         \includegraphics[width=0.18\textwidth]{Images/brainImgs/executiv_slices/brain_slice66.png} & 
+%         \includegraphics[width=0.18\textwidth]{Images/brainImgs/executiv_slices/brain_slice67.png} & 
+%         \includegraphics[width=0.18\textwidth]{Images/brainImgs/executiv_slices/brain_slice68.png} & 
+%         \includegraphics[width=0.18\textwidth]{Images/brainImgs/executiv_slices/brain_slice69.png} \\ 
+%         LPIPS & 0.018 & 0.042 & 0.052 & 0.060 \\
+%         PSNR (dB) & 33.23 & 29.34 & 26.64 & 25.38 \\ 
+%         SSIM & 0.976 & 0.936 & 0.853 & 0.750 \\ \bottomrule
+%     \end{tabular}
+%     \caption{Comparison of Brain MRI Slices with Reference Slice 65}
+%     \label{table:slice_comparison}
+% \end{table}
+
+\FloatBarrier
+
+%Network 1
+\begin{table}[h]
+    \centering
+    \resizebox{\textwidth}{!}{ % Skaliert die Tabelle auf die volle Breite
+        \begin{tabular}{c c c c c c c}
+            \toprule
+            & \textbf{Pair 1} & \textbf{Pair 2} & \textbf{Pair 3} & \textbf{Pair 4} & \textbf{Pair 5} & \textbf{Average} \\
+            \midrule
+            \textbf{Original} & 
+            \includegraphics[width=1.5cm]{Images/lungImgs/1/original_1.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/1/original_2.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/1/original_3.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/1/original_4.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/1/original_5.png} & \\
+            
+            \textbf{Prediction} & 
+            \includegraphics[width=1.5cm]{Images/lungImgs/1/prediction_1.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/1/prediction_2.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/1/prediction_3.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/1/prediction_4.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/1/prediction_5.png} & \\
+            
+            \midrule
+            \multicolumn{7}{c}{\textbf{Original vs Prediction}} \\
+            \midrule
+            \textbf{LPIPS} & 0.519 & 0.505 & 0.510 & 0.503 & 0.503 & 0.508 \\
+            \textbf{PSNR (dB)} & 15.02 & 15.07 & 15.17 & 15.17 & 15.35 & 15.16 \\
+            \textbf{SSIM} & 0.230 & 0.236 & 0.226 & 0.215 & 0.216 & 0.225 \\
+            \midrule
+            \multicolumn{7}{c}{\textbf{1 vs X: Original}} \\
+            \midrule
+            \textbf{LPIPS} & 0.000 & 0.216 & 0.341 & 0.388 & 0.404 & 0.342 \\
+            \textbf{PSNR (dB)} & \infty & 20.86 & 17.34 & 16.66 & 16.49 & 17.83 \\
+            \textbf{SSIM} & 1.000 & 0.620 & 0.317 & 0.286 & 0.334 & 0.411 \\
+            \midrule
+            \multicolumn{7}{c}{\textbf{1 vs X: Prediction}} \\
+            \midrule
+            \textbf{LPIPS} & 0.00 & 0.269 & 0.367 & 0.396 & 0.399 & 0.366 \\
+            \textbf{PSNR (dB)} & \infty & 22.52 & 19.61 & 18.64 & 18.22 & 19.50 \\
+            \textbf{SSIM} & 1.000 &  0.710 & 0.518 & 0.452 & 0.418 & 0.520 \\
+            \bottomrule
+        \end{tabular}
+    }
+    \caption{Comparison of metrics between original and predicted images, as well as between the first slice and subsequent slices. Results correspond to Network 1.}
+    \label{table:network1}
+\end{table}
+
+
+
+%Network 2
+\begin{table}[h]
+    \centering
+    \resizebox{\textwidth}{!}{ % Skaliert die Tabelle auf die volle Breite
+        \begin{tabular}{c c c c c c c}
+            \toprule
+            & \textbf{Pair 1} & \textbf{Pair 2} & \textbf{Pair 3} & \textbf{Pair 4} & \textbf{Pair 5} & \textbf{Average} \\
+            \midrule
+            \textbf{Original} & 
+            \includegraphics[width=1.5cm]{Images/lungImgs/2/original_1.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/2/original_2.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/2/original_3.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/2/original_4.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/2/original_5.png} & \\
+            
+            \textbf{Prediction} & 
+            \includegraphics[width=1.5cm]{Images/lungImgs/2/prediction_1.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/2/prediction_2.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/2/prediction_3.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/2/prediction_4.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/2/prediction_5.png} & \\
+            
+            \midrule
+            \multicolumn{7}{c}{\textbf{Original vs Prediction}} \\
+            \midrule
+            \textbf{LPIPS} & 0.500 & 0.501 & 0.512 & 0.493 & 0.495 & 0.500 \\
+            \textbf{PSNR (dB)} & 15.27 & 14.84 & 15.26 & 15.17 & 15.48 & 15.20 \\
+            \textbf{SSIM} & 0.236 & 0.221 & 0.225 & 0.238 & 0.238 & 0.232 \\
+            \midrule
+            \multicolumn{7}{c}{\textbf{1 vs X: Original}} \\
+            \midrule
+            \textbf{LPIPS} & 0.000 & 0.216 & 0.341 & 0.388 & 0.404 & 0.337 \\
+            \textbf{PSNR (dB)} & \infty & 20.86 & 17.34 & 16.66 & 16.49 & 17.84 \\
+            \textbf{SSIM} & 1.000 & 0.620 & 0.317 & 0.286 & 0.334 & 0.389 \\
+            \midrule
+            \multicolumn{7}{c}{\textbf{1 vs X: Prediction}} \\
+            \midrule
+            \textbf{LPIPS} & 0.000 & 0.349 & 0.386 & 0.371 & 0.440 & 0.386 \\
+            \textbf{PSNR (dB)} & \infty & 19.90 & 18.75 & 18.50 & 17.39 & 18.64 \\
+            \textbf{SSIM} & 1.000 &  0.567 & 0.490 & 0.513 & 0.389 & 0.489 \\
+            \bottomrule
+        \end{tabular}
+    }
+    \caption{Comparison of metrics between original and predicted images, as well as between the first slice and subsequent slices. Results correspond to Network 2.}
+    \label{table:network2}
+\end{table}
+
+
+
+%Network 3
+\begin{table}[h]
+    \centering
+    \resizebox{\textwidth}{!}{ % Skaliert die Tabelle auf die volle Breite
+        \begin{tabular}{c c c c c c c}
+            \toprule
+            & \textbf{Pair 1} & \textbf{Pair 2} & \textbf{Pair 3} & \textbf{Pair 4} & \textbf{Pair 5} & \textbf{Average} \\
+            \midrule
+            \textbf{Original} & 
+            \includegraphics[width=1.5cm]{Images/lungImgs/3/original_1.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/3/original_2.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/3/original_3.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/3/original_4.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/3/original_5.png} & \\
+            
+            \textbf{Prediction} & 
+            \includegraphics[width=1.5cm]{Images/lungImgs/3/prediction_1.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/3/prediction_2.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/3/prediction_3.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/3/prediction_4.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/3/prediction_5.png} & \\
+            
+            \midrule
+            \multicolumn{7}{c}{\textbf{Original vs Prediction}} \\
+            \midrule
+            \textbf{LPIPS} & 0.512 & 0.508 & 0.515 & 0.502 & 0.508 & 0.509 \\
+            \textbf{PSNR (dB)} & 14.98 & 14.95 & 15.19 & 15.10 & 15.06 & 15.05 \\
+            \textbf{SSIM} & 0.224 & 0.228 & 0.230 & 0.217 & 0.209 & 0.221 \\
+            \midrule
+            \multicolumn{7}{c}{\textbf{1 vs X: Original}} \\
+            \midrule
+            \textbf{LPIPS} & 0.000 & 0.216 & 0.341 & 0.388 & 0.404 & 0.337 \\
+            \textbf{PSNR (dB)} & \infty & 20.86 & 17.34 & 16.66 & 16.49 & 17.84 \\
+            \textbf{SSIM} & 1.000 & 0.620 & 0.317 & 0.286 & 0.334 & 0.389 \\
+            \midrule
+            \multicolumn{7}{c}{\textbf{1 vs X: Prediction}} \\
+            \midrule
+            \textbf{LPIPS} & 0.000 & 0.175 & 0.350 & 0.369 & 0.393 & 0.322 \\
+            \textbf{PSNR (dB)} & \infty & 26.96 & 19.39 & 19.04 & 18.40 & 20.95 \\
+            \textbf{SSIM} & 1.000 &  0.854 & 0.531 & 0.493 & 0.436 & 0.579 \\
+            \bottomrule
+        \end{tabular}
+    }
+    \caption{Comparison of metrics between original and predicted images, as well as between the first slice and subsequent slices. Results correspond to Network 3.}
+    \label{table:network3}
+\end{table}
+
+
+
+%Network 4
+\begin{table}[h]
+    \centering
+    \resizebox{\textwidth}{!}{ % Skaliert die Tabelle auf die volle Breite
+        \begin{tabular}{c c c c c c c}
+            \toprule
+            & \textbf{Pair 1} & \textbf{Pair 2} & \textbf{Pair 3} & \textbf{Pair 4} & \textbf{Pair 5} & \textbf{Average} \\
+            \midrule
+            \textbf{Original} & 
+            \includegraphics[width=1.5cm]{Images/lungImgs/4/original_1.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/4/original_2.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/4/original_3.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/4/original_4.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/4/original_5.png} & \\
+            
+            \textbf{Prediction} & 
+            \includegraphics[width=1.5cm]{Images/lungImgs/4/prediction_1.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/4/prediction_2.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/4/prediction_3.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/4/prediction_4.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/4/prediction_5.png} & \\
+            
+            \midrule
+            \multicolumn{7}{c}{\textbf{Original vs Prediction}} \\
+            \midrule
+            \textbf{LPIPS} & 0.518 & 0.508 & 0.511 & 0.506 & 0.499 & 0.509 \\
+            \textbf{PSNR (dB)} & 15.10 & 14.94 & 15.15 & 14.93 & 14.76 & 14.98 \\
+            \textbf{SSIM} & 0.245 & 0.242 & 0.237 & 0.222 & 0.226 & 0.235 \\
+            \midrule
+            \multicolumn{7}{c}{\textbf{1 vs X: Original}} \\
+            \midrule
+            \textbf{LPIPS} & 0.000 & 0.216 & 0.341 & 0.388 & 0.404 & 0.337 \\
+            \textbf{PSNR (dB)} & \infty & 20.86 & 17.34 & 16.66 & 16.49 & 17.84 \\
+            \textbf{SSIM} & 1.000 & 0.620 & 0.317 & 0.286 & 0.334 & 0.389 \\
+            \midrule
+            \multicolumn{7}{c}{\textbf{1 vs X: Prediction}} \\
+            \midrule
+            \textbf{LPIPS} & 0.000 & 0.302 & 0.333 & 0.365 & 0.370 & 0.342 \\
+            \textbf{PSNR (dB)} & \infty & 21.75 & 20.28 & 19.29 & 18.45 & 19.94 \\
+            \textbf{SSIM} & 1.000 &  0.663 & 0.587 & 0.533 & 0.494 & 0.569 \\
+            \bottomrule
+        \end{tabular}
+    }
+    \caption{Comparison of metrics between original and predicted images, as well as between the first slice and subsequent slices. Results correspond to Network 4.}
+    \label{table:network4}
+\end{table}
+
+
+
+%Network 5
+\begin{table}[h]
+    \centering
+    \resizebox{\textwidth}{!}{ % Skaliert die Tabelle auf die volle Breite
+        \begin{tabular}{c c c c c c c}
+            \toprule
+            & \textbf{Pair 1} & \textbf{Pair 2} & \textbf{Pair 3} & \textbf{Pair 4} & \textbf{Pair 5} & \textbf{Average} \\
+            \midrule
+            \textbf{Original} & 
+            \includegraphics[width=1.5cm]{Images/lungImgs/5/original_1.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/5/original_2.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/5/original_3.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/5/original_4.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/5/original_5.png} & \\
+            
+            \textbf{Prediction} & 
+            \includegraphics[width=1.5cm]{Images/lungImgs/5/prediction_1.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/5/prediction_2.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/5/prediction_3.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/5/prediction_4.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/5/prediction_5.png} & \\
+            
+            \midrule
+            \multicolumn{7}{c}{\textbf{Original vs Prediction}} \\
+            \midrule
+            \textbf{LPIPS} & 0.496 & 0.502 & 0.503 & 0.494 & 0.495 & 0.498 \\
+            \textbf{PSNR (dB)} & 15.27 & 14.82 & 15.36 & 15.09 & 15.41 & 15.19 \\
+            \textbf{SSIM} & 0.259 & 0.233 & 0.242 & 0.216 & 0.257 & 0.241 \\
+            \midrule
+            \multicolumn{7}{c}{\textbf{1 vs X: Original}} \\
+            \midrule
+            \textbf{LPIPS} & 0.000 & 0.216 & 0.341 & 0.388 & 0.404 & 0.337 \\
+            \textbf{PSNR (dB)} & \infty & 20.86 & 17.34 & 16.66 & 16.49 & 17.84 \\
+            \textbf{SSIM} & 1.000 & 0.620 & 0.317 & 0.286 & 0.334 & 0.389 \\
+            \midrule
+            \multicolumn{7}{c}{\textbf{1 vs X: Prediction}} \\
+            \midrule
+            \textbf{LPIPS} & 0.000 & 0.278 & 0.341 & 0.393 & 0.365 & 0.344 \\
+            \textbf{PSNR (dB)} & \infty & 21.67 & 19.83 & 18.16 & 18.88 & 19.63 \\
+            \textbf{SSIM} & 1.000 &  0.686 & 0.540 & 0.427 & 0.477 & 0.532 \\
+            \bottomrule
+        \end{tabular}
+    }
+    \caption{Comparison of metrics between original and predicted images, as well as between the first slice and subsequent slices. Results correspond to Network 5.}
+    \label{table:network5}
+\end{table}
+
+
+
+%Network 6
+\begin{table}[h]
+    \centering
+    \resizebox{\textwidth}{!}{ % Skaliert die Tabelle auf die volle Breite
+        \begin{tabular}{c c c c c c c}
+            \toprule
+            & \textbf{Pair 1} & \textbf{Pair 2} & \textbf{Pair 3} & \textbf{Pair 4} & \textbf{Pair 5} & \textbf{Average} \\
+            \midrule
+            \textbf{Original} & 
+            \includegraphics[width=1.5cm]{Images/lungImgs/6/original_1.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/6/original_2.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/6/original_3.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/6/original_4.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/6/original_5.png} & \\
+            
+            \textbf{Prediction} & 
+            \includegraphics[width=1.5cm]{Images/lungImgs/6/prediction_1.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/6/prediction_2.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/6/prediction_3.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/6/prediction_4.png} &
+            \includegraphics[width=1.5cm]{Images/lungImgs/6/prediction_5.png} & \\
+            
+            \midrule
+            \multicolumn{7}{c}{\textbf{Original vs Prediction}} \\
+            \midrule
+            \textbf{LPIPS} & 0.526 & 0.518 & 0.511 & 0.508 & 0.502 & 0.513 \\
+            \textbf{PSNR (dB)} & 15.56 & 15.47 & 15.93 & 15.80 & 15.94 & 15.74 \\
+            \textbf{SSIM} & 0.225 & 0.214 & 0.227 & 0.222 & 0.222 & 0.222 \\
+            \midrule
+            \multicolumn{7}{c}{\textbf{1 vs X: Original}} \\
+            \midrule
+            \textbf{LPIPS} & 0.000 & 0.216 & 0.341 & 0.388 & 0.404 & 0.337 \\
+            \textbf{PSNR (dB)} & \infty & 20.86 & 17.34 & 16.66 & 16.49 & 17.84 \\
+            \textbf{SSIM} & 1.000 & 0.620 & 0.317 & 0.286 & 0.334 & 0.389 \\
+            \midrule
+            \multicolumn{7}{c}{\textbf{1 vs X: Prediction}} \\
+            \midrule
+            \textbf{LPIPS} & 0.000 & 0.283 & 0.375 & 0.394 & 0.406 & 0.364 \\
+            \textbf{PSNR (dB)} & \infty & 23.05 & 19.90 & 18.94 & 18.62 & 20.13 \\
+            \textbf{SSIM} & 1.000 &  0.689 & 0.489 & 0.453 & 0.425 & 0.514 \\
+            \bottomrule
+        \end{tabular}
+    }
+    \caption{Comparison of metrics between original and predicted images, as well as between the first slice and subsequent slices. Results correspond to Network 6.}
+    \label{table:network6}
+\end{table}
